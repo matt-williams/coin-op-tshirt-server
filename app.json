@@ -1,0 +1,8 @@
+{
+  "name": "coin-op-tshirt-server",
+  "description": "Server for https://github.com/matt-williams/coin-op-tshirt",
+  "repository": "https://github.com/matt-williams/coin-op-tshirt-server",
+  "logo": "http://node-js-sample.herokuapp.com/node.svg",
+  "keywords": ["node", "express", "static"],
+  "image": "heroku/nodejs"
+}
