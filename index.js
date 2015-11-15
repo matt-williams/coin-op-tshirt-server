@@ -64,7 +64,7 @@ app.ws('/simplify/websocket', function(ws, req) {
 });
 
 app.get('/simplify/server-sent-event', function(req, rsp) {
-  req.socket.setTimeout(Infinity);
+  req.socket.setTimeout(45);
 
   rsp.writeHead(200, {'Content-Type': 'text/event-stream',
                       'Cache-Control': 'no-cache',
