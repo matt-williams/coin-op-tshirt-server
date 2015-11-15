@@ -41,6 +41,8 @@ app.post('/', function(req, rsp) {
 });
 
 app.post('/simplify/webhook', function(req, rsp) {
+  console.error(JSON.stringify(req.body));
+  console.error(JSON.stringify(req.body.toString('utf8')));
   wss.getWss('/simplify/websocket').clients.forEach(function(client) {
     client.send(req.body.toString('utf8'));
   });
