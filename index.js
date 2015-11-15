@@ -16,6 +16,7 @@ app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
 var wss = expressWs(app);
 var sseResponses = [];
+var pendingPollResponses = [];
 
 app.get('/', function(req, rsp) {
   rsp.render('pages/index');
@@ -56,6 +57,10 @@ app.post('/simplify/webhook', function(req, rsp) {
       rsp.write('data: ' + body + '\n');
       rsp.write('\n');
     });
+    pendingPollResponses.push(body);
+    if (pendingPollResponses.length > 5) {
+      pendingPollResponses.splice(0, pendingPollResponses.length - 5);
+    }
     rsp.send('OK');
   });
 });
@@ -64,7 +69,7 @@ app.ws('/simplify/websocket', function(ws, req) {
 });
 
 app.get('/simplify/server-sent-event', function(req, rsp) {
-  req.socket.setTimeout(45);
+  req.socket.setTimeout(Infinity);
 
   rsp.writeHead(200, {'Content-Type': 'text/event-stream',
                       'Cache-Control': 'no-cache',
@@ -76,6 +81,13 @@ app.get('/simplify/server-sent-event', function(req, rsp) {
   rsp.on('close', function() {
     sseResponses = sseResponses.filter(function(x) {return x != rsp});
   });
+});
+
+app.get('/simplify/poll', function(req, rsp) {
+  if (pendingPollResponses) {
+    rsp.send(pendingPollResponses[0]);
+    pendingPollResponses.splice(0, 1);
+  }
 });
 
 app.listen(app.get('port'), function() {
