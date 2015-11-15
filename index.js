@@ -41,11 +41,8 @@ app.post('/', function(req, rsp) {
 });
 
 app.post('/simplify/webhook', function(req, rsp) {
-  console.log("Got WebHook");
   wss.getWss('/simplify/websocket').clients.forEach(function(client) {
-    console.log("Sending to client", client);
-    client.send("Test");
-    //client.send(req.body);
+    client.send(req.body);
   });
   rsp.send('OK');
 });
