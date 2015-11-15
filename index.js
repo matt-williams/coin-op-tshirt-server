@@ -84,9 +84,11 @@ app.get('/simplify/server-sent-event', function(req, rsp) {
 });
 
 app.get('/simplify/poll', function(req, rsp) {
-  if (pendingPollResponses) {
+  if (pendingPollResponses.length > 0) {
     rsp.send(pendingPollResponses[0]);
     pendingPollResponses.splice(0, 1);
+  } else {
+    rsp.status(204).send();
   }
 });
 
