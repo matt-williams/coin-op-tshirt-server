@@ -42,7 +42,7 @@ app.post('/', function(req, rsp) {
 
 app.post('/simplify/webhook', function(req, rsp) {
   wss.getWss('/simplify/websocket').clients.forEach(function(client) {
-    client.send(req.body);
+    client.send(req.body.toString('utf8'));
   });
   rsp.send('OK');
 });
