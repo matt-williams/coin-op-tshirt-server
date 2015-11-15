@@ -14,15 +14,14 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
 app.use(express.static(__dirname + '/public'));
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.raw());
 var wss = expressWs(app);
 
 app.get('/', function(req, rsp) {
   rsp.render('pages/index');
 });
 
-app.post('/', function(req, rsp) {
+app.use('/simplify/makePayment', bodyParser.urlencoded({extended: false}));
+app.post('/simplify/makePayment', function(req, rsp) {
   client = simplify.getClient(SIMPLIFY_CLIENT_CONFIG);
   client.payment.create({amount: "1000",
                          token: req.body.simplifyToken,
@@ -32,21 +31,26 @@ app.post('/', function(req, rsp) {
       if (errData) {
         console.error("Error Message: " + errData.data.error.message);
         // handle the error
-        rsp.render('pages/index');
+        rsp.redirect('/');
         return;
       }
       console.log("Payment Status: " + data.paymentStatus);
-      rsp.render('pages/index');
+      rsp.redirect('/');
     });
 });
 
 app.post('/simplify/webhook', function(req, rsp) {
-  console.error(JSON.stringify(req.body));
-  console.error(JSON.stringify(req.body.toString('utf8')));
-  wss.getWss('/simplify/websocket').clients.forEach(function(client) {
-    client.send(req.body.toString('utf8'));
+  var body = "";
+  req.setEncoding('utf8');
+  req.on('data', function(chunk) { 
+    body += chunk;
   });
-  rsp.send('OK');
+  req.on('end', function() {
+    wss.getWss('/simplify/websocket').clients.forEach(function(client) {
+      client.send(body);
+    });
+    rsp.send('OK');
+  });
 });
 
 app.ws('/simplify/websocket', function(ws, req) {
