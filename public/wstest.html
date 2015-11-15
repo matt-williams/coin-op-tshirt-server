@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<title>WebSockets Test</title>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+  websocket = new WebSocket("ws://coin-op-tshirt.herokuapp.com/simplify/websocket");
+  websocket.onopen = function(evt) { console.log("CONNECTED"); }
+  websocket.onclose = function(evt) { console.log("DISCONNECTED"); }
+  websocket.onmessage = function(evt) { console.log(evt.data); }
+  websocket.onerror = function(evt) { console.log(evt.data); }
+});
+</script>
+</html>
+<body>
+</body>
+</html>
