@@ -31,13 +31,10 @@ app.post('/simplify/makePayment', function(req, rsp) {
                          currency: "USD"},
     function(errData, data) {
       if (errData) {
-        console.error("Error Message: " + errData.data.error.message);
-        // handle the error
-        rsp.redirect('/');
+        rsp.redirect('/#failure=' + errData.data.error.message);
         return;
       }
-      console.log("Payment Status: " + data.paymentStatus);
-      rsp.redirect('/');
+      rsp.redirect('/#success=Payment processed!');
     });
 });
 

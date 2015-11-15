@@ -1,12 +1,51 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Hello</title>
+<title>Coin-Op T-Shirt</title>
 <link rel="shortcut icon" href="/favicon.ico" />
+<style>
+body {
+  font-family: sans-serif;
+  background-color: white;
+}
+div.container {
+  margin: auto;
+  width: 460px;
+  border: 5px solid red;
+  padding: 10px;
+  position: relative;
+  text-align: center;
+  background-color: #ffff77;
+}
+h1 {
+  color: red;
+  text-align: center;
+} 
+label {
+  float: left;
+}
+input, select, button {
+  margin: 5px auto;
+}
+input#cc-cvc {
+  width: 60px;
+}
+button {
+  position: relative;
+  text-align: center;
+}
+</style>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://www.simplify.com/commerce/v1/simplify.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
+
+  if (window.location.hash.startsWith("#success=")) {
+    $("#simplify-payment-form").after("<div class='success'>" + window.location.hash.substr("#success=".length) + "</div>");
+  } else if (window.location.hash.startsWith("#error=")) {
+    $("#simplify-payment-form").after("<div class='failure'>" + window.location.hash.substr("#failure=".length) + "</div>");
+  }
+
   $("#simplify-payment-form").on("submit", function() {
     // Disable the submit button
     $("#process-payment-btn").attr("disabled", "disabled");
@@ -28,6 +67,7 @@ $(document).ready(function() {
 function simplifyResponseHandler(data) {
   var $paymentForm = $("#simplify-payment-form");
   // Remove all previous errors
+  $(".success").remove();
   $(".error").remove();
   // Check for errors
   if (data.error) {
@@ -57,46 +97,49 @@ function simplifyResponseHandler(data) {
 </script>
 </head>
 <body>
-<h1>Hello</h1>
-<form id="simplify-payment-form" action="/simplify/makePayment" method="POST">
-  <div>
-    <label>Credit Card Number: </label>
-    <input id="cc-number" type="text" maxlength="20" autocomplete="off" value="5105105105105100" autofocus />
-  </div>
-  <div>
-    <label>CVC: </label>
-    <input id="cc-cvc" type="text" maxlength="4" autocomplete="off" value="1234"/>
-  </div>
-  <div>
-    <label>Expiry Date: </label>
-    <select id="cc-exp-month">
-      <option value="01">Jan</option>
-      <option value="02">Feb</option>
-      <option value="03">Mar</option>
-      <option value="04">Apr</option>
-      <option value="05">May</option>
-      <option value="06">Jun</option>
-      <option value="07">Jul</option>
-      <option value="08">Aug</option>
-      <option value="09">Sep</option>
-      <option value="10">Oct</option>
-      <option value="11">Nov</option>
-      <option value="12">Dec</option>
-    </select>
-    <select id="cc-exp-year">
-      <option value="15">2015</option>
-      <option value="16">2016</option>
-      <option value="17">2017</option>
-      <option value="18">2018</option>
-      <option value="19">2019</option>
-      <option value="20">2020</option>
-      <option value="21">2021</option>
-      <option value="21">2022</option>
-      <option value="22">2023</option>
-      <option value="22">2024</option>
-    </select>
-  </div>
-  <button id="process-payment-btn" type="submit">Process Payment</button>
-</form>
+<div class="container" />
+  <img src="img/logo.png" width="400" height="400" />
+  <h1>Will Flash for Cash</h1>
+  <form id="simplify-payment-form" action="/simplify/makePayment" method="POST">
+    <div>
+      <label>Credit Card Number: </label>
+      <input id="cc-number" type="text" maxlength="20" autocomplete="off" value="5105105105105100" autofocus />
+    </div>
+    <div>
+      <label>CVC: </label>
+      <input id="cc-cvc" type="text" maxlength="4" autocomplete="off" value="1234"/>
+    </div>
+    <div>
+      <label>Expiry Date: </label>
+      <select id="cc-exp-month">
+        <option value="01">Jan</option>
+        <option value="02">Feb</option>
+        <option value="03">Mar</option>
+        <option value="04">Apr</option>
+        <option value="05">May</option>
+        <option value="06">Jun</option>
+        <option value="07">Jul</option>
+        <option value="08">Aug</option>
+        <option value="09">Sep</option>
+        <option value="10">Oct</option>
+        <option value="11">Nov</option>
+        <option value="12" selected="selected">Dec</option>
+      </select>
+      <select id="cc-exp-year">
+        <option value="15">2015</option>
+        <option value="16">2016</option>
+        <option value="17">2017</option>
+        <option value="18">2018</option>
+        <option value="19">2019</option>
+        <option value="20">2020</option>
+        <option value="21">2021</option>
+        <option value="21">2022</option>
+        <option value="22">2023</option>
+        <option value="22">2024</option>
+      </select>
+    </div>
+    <button id="process-payment-btn" type="submit">Process Payment</button>
+  </form>
+</div>
 </body>
 </html>
