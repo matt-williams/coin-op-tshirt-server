@@ -34,6 +34,23 @@ button {
   position: relative;
   text-align: center;
 }
+div.success {
+  position: absolute;
+  top: 200px;
+  left: -25px;
+  width: 520px;
+  height: 180px;
+  color: #00cc00;
+  border: 5px solid #00cc00;
+  background-color: #ffff77;
+  font-size: 64px;
+  padding-top: 20px;
+}
+div.error {
+  font-weight: bold;
+  color: red;
+  margin: -8px auto 12px auto;
+}
 </style>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://www.simplify.com/commerce/v1/simplify.js"></script>
@@ -41,10 +58,11 @@ button {
 $(document).ready(function() {
 
   if (window.location.hash.startsWith("#success=")) {
-    $("#simplify-payment-form").after("<div class='success'>" + window.location.hash.substr("#success=".length) + "</div>");
+    $("#simplify-payment-form").before("<div class='success'>" + window.location.hash.substr("#success=".length) + "</div>");
   } else if (window.location.hash.startsWith("#error=")) {
-    $("#simplify-payment-form").after("<div class='failure'>" + window.location.hash.substr("#failure=".length) + "</div>");
+    $("#simplify-payment-form").before("<div class='error'>" + window.location.hash.substr("#error=".length) + "</div>");
   }
+  window.location.hash = "";
 
   $("#simplify-payment-form").on("submit", function() {
     // Disable the submit button
@@ -81,7 +99,7 @@ function simplifyResponseHandler(data) {
                      "' is invalid - " + fieldErrors[i].message + "</div>";
       }
       // Display the errors
-      $paymentForm.after(errorList);
+      $paymentForm.before(errorList);
     }
     // Re-enable the submit button
     $("#process-payment-btn").removeAttr("disabled");
