@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<title>Server-Sent Events Test</title>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+  new EventSource('/simplify/server-sent-event').addEventListener('payment', function(e) {
+    console.log(e.data);
+  }, false);
+});
+</script>
+</html>
+<body>
+</body>
+</html>

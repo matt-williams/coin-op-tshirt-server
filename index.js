@@ -15,6 +15,7 @@ app.set('view engine', 'ejs');
 
 app.use(express.static(__dirname + '/public'));
 var wss = expressWs(app);
+var sseResponses = [];
 
 app.get('/', function(req, rsp) {
   rsp.render('pages/index');
@@ -49,11 +50,32 @@ app.post('/simplify/webhook', function(req, rsp) {
     wss.getWss('/simplify/websocket').clients.forEach(function(client) {
       client.send(body);
     });
+    sseResponses.forEach(function(rsp) {
+      rsp.write('event: payment\n');
+      rsp.write('id: 1\n');
+      rsp.write('data: ' + body + '\n');
+      rsp.write('\n');
+    });
     rsp.send('OK');
   });
 });
 
 app.ws('/simplify/websocket', function(ws, req) {
+});
+
+app.get('/simplify/server-sent-event', function(req, rsp) {
+  req.socket.setTimeout(Infinity);
+
+  rsp.writeHead(200, {'Content-Type': 'text/event-stream',
+                      'Cache-Control': 'no-cache',
+                      'Connection': 'keep-alive'});
+  rsp.write('\n');
+
+  sseResponses.push(rsp);
+
+  rsp.on('close', function() {
+    sseResponses = sseResponses.filter(function(x) {return x != rsp});
+  });
 });
 
 app.listen(app.get('port'), function() {
